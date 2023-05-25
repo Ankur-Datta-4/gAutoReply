@@ -1,23 +1,20 @@
+// MODULES ------------------------------------------------------------------------------
 require("dotenv").config({
   path: `C:\\Users\\ankur\\OneDrive\\Desktop\\gAutoReplyOpenInApp\\.env`,
 });
 const { google } = require("googleapis");
-
-const readline = require("readline");
 const makeBody = require("./services/makeBody");
 const getAccessToken = require("./services/getAccessToken");
 
+// INITS ---------------------------------------------------------------------------------
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
   process.env.REDIRECT_URL
 );
 const gmail = google.gmail({ version: "v1", auth: oauth2Client });
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
 
+// ACTIONS -------------------------------------------------------------------------------
 async function checkEmails() {
   try {
     const response = await gmail.users.messages.list({
@@ -42,6 +39,8 @@ async function checkEmails() {
         const fromHeader = headers.find((header) => header.name === "From");
         const fromEmail = fromHeader.value;
         const messageBody = "Hey there, I am on a vacation!";
+        const labelName = "snoozedx";
+
         // Reply to the email
         const rawMessage = makeBody({
           to: fromEmail,
@@ -49,6 +48,7 @@ async function checkEmails() {
           message: messageBody,
           subject: "Re: Out of office",
         });
+
         await gmail.users.messages.send({
           userId: "me",
           resource: {
@@ -56,11 +56,9 @@ async function checkEmails() {
             threadId: threadId,
           },
         });
-        console.log("Sent email reply!");
-        console.log("Checking for label...");
-
+        console.log("Sent email reply to ", fromEmail, "...");
+        console.log("Checking for label ", labelName, "...");
         // Add label to the email
-        const labelName = "snoozedx";
         const labelResponse = await gmail.users.labels.list({
           userId: "me",
         });
