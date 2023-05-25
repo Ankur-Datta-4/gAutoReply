@@ -33,9 +33,7 @@ async function checkEmails() {
 
       const threadId = msgResponse.data.threadId;
       const history = msgResponse.data.history || [];
-      console.log(history);
       const sentByMe = history.some((entry) => entry.labelIds.includes("SENT"));
-      console.log(sentByMe);
       if (!sentByMe) {
         // find sender email from msgResponse
         const headers = msgResponse.data.payload.headers;
@@ -79,7 +77,16 @@ async function checkEmails() {
           console.log("Created label:", createLabelResponse.data);
           label = createLabelResponse.data;
         }
+        // marking the mail as read
+        await gmail.users.messages.modify({
+          userId: "me",
+          id: message.id,
+          resource: {
+            removeLabelIds: ["UNREAD"],
+          },
+        });
 
+        // Add the label to the email
         await gmail.users.messages.modify({
           userId: "me",
           id: message.id,
