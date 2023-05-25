@@ -2,14 +2,16 @@ require("dotenv").config({
   path: `C:\\Users\\ankur\\OneDrive\\Desktop\\gAutoReplyOpenInApp\\.env`,
 });
 const { google } = require("googleapis");
+
+const readline = require("readline");
+const makeBody = require("./services/makeBody");
+const getAccessToken = require("./services/getAccessToken");
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
   process.env.REDIRECT_URL
 );
-const readline = require("readline");
-const makeBody = require("./services/makeBody");
-
 const gmail = google.gmail({ version: "v1", auth: oauth2Client });
 const rl = readline.createInterface({
   input: process.stdin,
@@ -103,22 +105,14 @@ async function checkEmails() {
 
 async function login() {
   try {
-    // const tokens = await getAccessToken();
-    // console.log("Access token:", tokens.access_token);
-    // console.log("Refresh token:", tokens.refresh_token);
-
-    // Use the access token to authenticate further API requests
-
-    let tempAccess =
-      "ya29.a0AWY7CkkszfHkgzjBHLuHtSAMPpSUFaZig0bgx8ft4QHaGqOkl2_Rz4_-1Rc9ELX7ZhgVDOLZ_HqUyEQyhooGZw2gdLhaX2D139sAyQtJj4yhc1ynXGP0gow6mwKhtU0AUC1FsFBgfsGltzLZKBJfR2UdiigHaCgYKAfsSARESFQG1tDrpWjkEzRUeNcCOYLodS9IJjg0163";
-    let tempRefresh =
-      "1//0gbq32g7_l-yeCgYIARAAGBASNwF-L9IrKv1SMgyJcz2nuIZLkIcCDHwVP5Il3UPbpugPQ47R5qmNidSzzhP3P-ThwpLskeLFJpI";
-    console.log("Access token:", tempAccess);
-    console.log("Refresh token:", tempRefresh);
+    const tokens = await getAccessToken(oauth2Client);
+    console.log("Access token:", tokens.access_token);
+    console.log("Refresh token:", tokens.refresh_token);
     oauth2Client.setCredentials({
-      access_token: tempAccess,
-      refresh_token: tempRefresh,
+      access_token: tokens.access_token,
+      refresh_token: tokens.refresh_token,
     });
+
     // Call the function at random intervals
     setInterval(checkEmails, 10000);
   } catch (error) {
