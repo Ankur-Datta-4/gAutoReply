@@ -30,18 +30,6 @@ function getAccessToken(oauth2Client) {
     });
     app.listen(4532);
     console.log(`Please authorize the app by visiting this URL: ${authUrl}`);
-    // rl.question("Enter the authorization code: ", (code) => {
-    //   rl.close();
-
-    //   oauth2Client.getToken(code, (err, tokens) => {
-    //     if (err) {
-    //       reject(err);
-    //     } else {
-    //       oauth2Client.setCredentials(tokens);
-    //       resolve(tokens);
-    //     }
-    //   });
-    // });
   });
 }
 
