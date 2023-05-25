@@ -20,7 +20,7 @@ async function checkEmails() {
     const response = await gmail.users.messages.list({
       userId: "me",
       labelIds: ["INBOX"],
-      q: "is:unread -in:chats -from:me from:ankurr2002@outlook.com",
+      q: "is:unread -in:chats",
     });
 
     const messages = response.data.messages || [];
@@ -112,7 +112,7 @@ async function login() {
     });
 
     // Call the function at random intervals
-    setInterval(checkEmails, 10000);
+    setInterval(checkEmails, Math.random() * (120000 - 45000) + 45000);
   } catch (error) {
     console.error("Login error:", error);
   }
