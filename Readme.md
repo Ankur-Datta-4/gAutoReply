@@ -1,6 +1,6 @@
 ### Gmail Autoreplier
 
--> Built as a part of Listed/OpeninApp assignment
+Send automatic replies to people who email you by using google-apis
 
 Github: https://github.com/Ankur-Datta-4/gAutoReply
 Demo: https://www.loom.com/share/8dacc791243b4d90b0133b31e668a289
