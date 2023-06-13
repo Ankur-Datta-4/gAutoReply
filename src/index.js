@@ -23,7 +23,7 @@ async function checkEmails() {
       q: "is:unread -in:chats",
     });
 
-    const messages = response.data.messages || [];
+    const messages = response.data.messages || []; //{}
     for (const message of messages) {
       const msgResponse = await gmail.users.messages.get({
         userId: "me",
@@ -39,14 +39,18 @@ async function checkEmails() {
         const fromHeader = headers.find((header) => header.name === "From");
         const fromEmail = fromHeader.value;
         const messageBody = "Hey there, I am on a vacation!";
-        const labelName = "snoozedx";
+        const labelName = "vacationmode";
 
         // Reply to the email
         const rawMessage = makeBody({
           to: fromEmail,
           from: "me",
           message: messageBody,
-          subject: "Re: Out of office",
+          subject: `Re: ${
+            headers.find((header) => header.name === "Subject").value
+          }`,
+          inReplyTo: headers.find((header) => header.name === "Message-ID")
+            .value,
         });
 
         await gmail.users.messages.send({
